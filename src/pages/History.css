@@ -1,0 +1,217 @@
+.history-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-2);
+}
+
+.history-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.history-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 16px;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-body);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-soft);
+}
+
+.export-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.export-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chart-card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  padding: var(--space-4);
+  background-color: var(--color-bg-surface);
+}
+
+.chart-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+  color: var(--color-text-main);
+}
+
+.chart-wrapper {
+  width: 100%;
+}
+
+.history-table-card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  overflow: hidden;
+  padding: 0;
+}
+
+.table-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-strong);
+  background-color: var(--color-bg-subtle);
+}
+
+.table-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: 0.938rem;
+  color: var(--color-text-main);
+}
+
+.data-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.history-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.history-data-table th {
+  padding: 12px 16px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border-strong);
+  background-color: var(--color-bg-surface);
+  user-select: none;
+}
+
+.history-data-table th.sortable-col {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.history-data-table th.sortable-col:hover {
+  color: var(--color-primary);
+  background-color: var(--color-bg-subtle);
+}
+
+.col-header-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* AGENTS.md Rule 4-9 Data Table Sort Indicator Specification */
+.sort-icon {
+  display: inline-block;
+  font-size: 0.813rem;
+  line-height: 1;
+}
+
+.sort-icon.inactive {
+  opacity: 0.35;
+  color: var(--color-text-muted);
+}
+
+.sort-icon.active {
+  font-weight: bold;
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+.history-data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-body);
+  vertical-align: middle;
+}
+
+.table-row-item {
+  transition: background-color 0.15s ease;
+}
+
+.table-row-item:hover {
+  background-color: var(--color-bg-subtle);
+}
+
+.date-cell-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-main);
+  font-weight: 500;
+}
+
+.cell-icon {
+  color: var(--color-text-muted);
+}
+
+.metric-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.813rem;
+}
+
+.tempo-pill {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.spine-pill {
+  background-color: rgba(255, 107, 74, 0.12);
+  color: var(--color-accent-coral);
+}
+
+.lesson-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-md);
+  color: var(--color-text-main);
+  font-weight: 500;
+}
+
+.empty-state {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.938rem;
+}
+

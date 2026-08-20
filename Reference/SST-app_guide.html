@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Golf Swing Analysis Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fcfaf7; color: #333; scroll-behavior: smooth; }
+        .chart-container { position: relative; width: 100%; max-width: 650px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .nav-link.active { border-bottom: 2px solid #2f5d3e; color: #2f5d3e; font-weight: 600; }
+        .card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .gradient-bg { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); }
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- Chosen Palette: Warm Professional Golf (Cream White, Sage Green, Slate Gray) -->
+<!-- Application Structure Plan: 
+1. Hero Section: 프로젝트 개요 및 핵심 아키텍처 요약.
+2. Architecture Explorer: 데이터 흐름을 계층별(Edge/Cloud)로 시각화하여 기술 스택 파악.
+3. Tech Deep-Dive (Interactive Tabs): 포즈 추정, 클럽/볼 트래킹 기술 상세 비교.
+4. Swing Phase Timeline: 8단계 스윙 이벤트를 인터랙티브하게 탐색하여 분석 로직 이해.
+5. Diagnostic Engine: 바이오매카닉스 기반 진단 규칙과 X-Factor 데이터 시각화.
+6. Resource Repository: 깃허브 및 허깅페이스의 오픈소스 자원을 필터링 가능한 카드로 제공.
+-->
+<!-- Visualization & Content Choices:
+- 아키텍처 흐름도: HTML/CSS Grid와 Flex를 이용한 계층 구조 표현.
+- 알고리즘 성능 비교: Chart.js Bar Chart를 사용하여 GolfPose vs Standard 모델 mAP 비교.
+- X-Factor 트렌드: Chart.js Line Chart로 스윙 단계별 각도 변화 시각화.
+- 리소스 카드: 클릭 시 필터링되는 인터랙티브 그리드 시스템.
+- NO SVG/Mermaid 사용: 모든 시각화는 Canvas(Chart.js) 및 Styled HTML 요소로 구현.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center">
+                <span class="text-xl font-bold text-stone-800">SmartSwing <span class="text-emerald-700">AI</span></span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#architecture" class="nav-link text-sm text-stone-600 hover:text-emerald-700 transition">아키텍처</a>
+                <a href="#technology" class="nav-link text-sm text-stone-600 hover:text-emerald-700 transition">핵심기술</a>
+                <a href="#phases" class="nav-link text-sm text-stone-600 hover:text-emerald-700 transition">스윙구간</a>
+                <a href="#resources" class="nav-link text-sm text-stone-600 hover:text-emerald-700 transition">오픈소스</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<header class="py-16 px-4 bg-[#f8f5f0]">
+    <div class="max-w-5xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-stone-900 mb-6 leading-tight">AI 기반 골프 스윙 분석 및<br><span class="text-emerald-700 font-extrabold italic">스마트 레슨</span> 앱 기술 가이드</h1>
+        <p class="text-lg text-stone-600 max-w-3xl mx-auto leading-relaxed">
+            컴퓨터 비전, 생체역학 데이터 처리, 그리고 생성형 AI 기술을 융합한 차세대 골프 솔루션 아키텍처를 탐색하십시오. 
+            본 대시보드는 최신 연구 보고서를 기반으로 기술적 구현 경로를 제시합니다.
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+    <!-- Section 1: Architecture -->
+    <section id="architecture" class="scroll-mt-20">
+        <div class="mb-10 border-l-4 border-emerald-600 pl-4">
+            <h2 class="text-3xl font-bold text-stone-800">종합 시스템 아키텍처</h2>
+            <p class="mt-2 text-stone-600">클라이언트 에지 연산과 클라우드 AI 백엔드로 분산된 고성능 데이터 파이프라인 구조입니다.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div class="space-y-6">
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-stone-100 card-hover">
+                    <h3 class="font-bold text-emerald-800 mb-2 flex items-center">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> 클라이언트 에지 (Edge)
+                    </h3>
+                    <ul class="text-sm text-stone-600 space-y-2">
+                        <li>• 비디오 전처리 및 120+ FPS 고속 프레임 추출</li>
+                        <li>• MediaPipe Pose 기반 실시간 키포인트 추출</li>
+                        <li>• YOLOv8-nano 기반 실시간 볼 트래킹 및 시각화</li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-white rounded-xl shadow-sm border border-stone-100 card-hover">
+                    <h3 class="font-bold text-stone-800 mb-2 flex items-center">
+                        <span class="w-2 h-2 bg-stone-500 rounded-full mr-2"></span> 클라우드 백엔드 (Cloud)
+                    </h3>
+                    <ul class="text-sm text-stone-600 space-y-2">
+                        <li>• 고정밀 3D 포즈 리프팅 및 생체역학 지표 산출</li>
+                        <li>• DTW 및 DMSM 기반 프로 스윙 정밀 시계열 매칭</li>
+                        <li>• Llama 3.1 RAG 기반 맞춤형 코칭 문장 생성</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200">
+                <h4 class="text-center font-semibold text-stone-700 mb-4 italic">모델 정확도 성능 비교 (mAP)</h4>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Core Technologies -->
+    <section id="technology" class="scroll-mt-20">
+        <div class="mb-10 border-l-4 border-emerald-600 pl-4">
+            <h2 class="text-3xl font-bold text-stone-800">핵심 딥러닝 기술</h2>
+            <p class="mt-2 text-stone-600">포즈 추정, 클럽 및 볼 트래킹을 위한 최적의 기술 스택을 비교하고 선택할 수 있습니다.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-8 bg-white border border-stone-100 rounded-2xl shadow-sm text-center">
+                <div class="inline-block p-3 bg-emerald-50 rounded-lg mb-4 text-emerald-700 font-bold">Pose Estimation</div>
+                <h3 class="text-xl font-bold mb-3">포즈 추정 엔진</h3>
+                <p class="text-sm text-stone-500 mb-6">MediaPipe(실시간) vs GolfPose(정밀) 모델을 하이브리드로 운용하여 자가 가림 현상 해결</p>
+                <div class="text-xs font-mono bg-stone-50 p-2 rounded text-left text-stone-400">mAP: 0.918~0.956 (GolfPose)</div>
+            </div>
+            <div class="p-8 bg-white border border-stone-100 rounded-2xl shadow-sm text-center">
+                <div class="inline-block p-3 bg-stone-100 rounded-lg mb-4 text-stone-700 font-bold">Club & Ball Tracking</div>
+                <h3 class="text-xl font-bold mb-3">궤적 추적 알고리즘</h3>
+                <p class="text-sm text-stone-500 mb-6">YOLOv8-nano와 칼만 필터를 결합하여 모션 블러 발생 구간에서도 중단 없는 궤적 생성</p>
+                <div class="text-xs font-mono bg-stone-50 p-2 rounded text-left text-stone-400">ONNX / CoreML 최적화 지원</div>
+            </div>
+            <div class="p-8 bg-white border border-stone-100 rounded-2xl shadow-sm text-center">
+                <div class="inline-block p-3 bg-amber-50 rounded-lg mb-4 text-amber-700 font-bold">Time Alignment</div>
+                <h3 class="text-xl font-bold mb-3">시계열 매칭 엔진</h3>
+                <p class="text-sm text-stone-500 mb-6">Velocity-DTW 및 DMSM을 통해 프로와 아마추어의 서로 다른 스윙 템포를 비선형 정렬</p>
+                <div class="text-xs font-mono bg-stone-50 p-2 rounded text-left text-stone-400">DMSM: 코치 관점 흐름 평가</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Swing Phases -->
+    <section id="phases" class="scroll-mt-20 bg-stone-900 text-white p-10 rounded-3xl overflow-hidden relative">
+        <div class="relative z-10">
+            <h2 class="text-3xl font-bold mb-2">8단계 인터랙티브 스윙 페이즈</h2>
+            <p class="text-stone-400 mb-12">스윙의 전 과정을 8가지 핵심 이벤트로 분할하여 데이터를 정규화하고 분석합니다.</p>
+            
+            <div class="flex flex-wrap gap-4 mb-10" id="phase-buttons">
+                <!-- Dynamic Buttons -->
+            </div>
+
+            <div id="phase-detail" class="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 min-h-[200px] flex flex-col justify-center">
+                <p class="text-stone-300 italic">단계를 클릭하여 상세 분석 로직을 확인하세요.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Diagnostics -->
+    <section id="diagnostics" class="scroll-mt-20">
+        <div class="mb-10 border-l-4 border-emerald-600 pl-4">
+            <h2 class="text-3xl font-bold text-stone-800">바이오매카닉스 진단 및 AI 레슨</h2>
+            <p class="mt-2 text-stone-600">X-Factor 및 주요 관절 각도를 실시간 추적하여 생성형 AI가 맞춤형 드릴을 생성합니다.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div class="space-y-8">
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">01</div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-1">X-Factor 분리각 측정</h4>
+                        <p class="text-sm text-stone-600">어깨와 골반의 회전 차이를 계산하여 파워 축적 정도를 정량화합니다. (프로 표준: 45~55°)</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center text-stone-700 font-bold">02</div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-1">머리 스웨이 및 척추각 유지</h4>
+                        <p class="text-sm text-stone-600">어드레스 대비 머리 이동 폭이 신체 길이의 15%를 초과할 경우 스웨이 오류로 진단합니다.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 font-bold">03</div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-1">RAG 기반 생성형 피드백</h4>
+                        <p class="text-sm text-stone-600">Llama 3.1 모델이 PGA 코칭 데이터베이스를 검색하여 환각 없이 정교한 교정 제언을 생성합니다.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-inner">
+                <h4 class="text-center font-semibold text-stone-700 mb-4">스윙 페이즈별 X-Factor 변화 추이</h4>
+                <div class="chart-container">
+                    <canvas id="xfactorChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Resources -->
+    <section id="resources" class="scroll-mt-20">
+        <div class="mb-10 border-l-4 border-emerald-600 pl-4">
+            <h2 class="text-3xl font-bold text-stone-800">오픈소스 및 모델 리포지토리</h2>
+            <p class="mt-2 text-stone-600">개발에 즉시 활용 가능한 GitHub 코드와 Hugging Face 모델 자원 리스트입니다.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-5 border border-stone-200 rounded-xl hover:border-emerald-500 transition-colors cursor-pointer group">
+                <span class="text-xs font-bold text-emerald-600 uppercase mb-2 block">GitHub / Python</span>
+                <h4 class="font-bold group-hover:text-emerald-700 mb-2">GolfPosePro</h4>
+                <p class="text-xs text-stone-500">MediaPipe 기반 페이즈 분할 및 YouTube 데이터 수집 파이프라인</p>
+            </div>
+            <div class="p-5 border border-stone-200 rounded-xl hover:border-emerald-500 transition-colors cursor-pointer group">
+                <span class="text-xs font-bold text-stone-600 uppercase mb-2 block">GitHub / C++</span>
+                <h4 class="font-bold group-hover:text-stone-700 mb-2">Pose2Par</h4>
+                <p class="text-xs text-stone-500">MMPose 및 OpenSim 기반 3D 바이오매카닉스 데이터 추출</p>
+            </div>
+            <div class="p-5 border border-stone-200 rounded-xl hover:border-emerald-500 transition-colors cursor-pointer group">
+                <span class="text-xs font-bold text-amber-600 uppercase mb-2 block">Hugging Face / DL</span>
+                <h4 class="font-bold group-hover:text-amber-700 mb-2">YOLOv8 Ball Tracker</h4>
+                <p class="text-xs text-stone-500">초경량 YOLOv8-nano 기반 모바일 최적화 볼 추적 모델</p>
+            </div>
+            <div class="p-5 border border-stone-200 rounded-xl hover:border-emerald-500 transition-colors cursor-pointer group">
+                <span class="text-xs font-bold text-emerald-600 uppercase mb-2 block">Hugging Face / LLM</span>
+                <h4 class="font-bold group-hover:text-emerald-700 mb-2">Golf-RAG-Llama</h4>
+                <p class="text-xs text-stone-500">PGA 가이드라인 인덱싱 기반 맞춤형 코칭 생성 엔진</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-stone-100 border-t border-stone-200 py-12 mt-20 text-center text-stone-500 text-sm">
+    <div class="max-w-7xl mx-auto px-4">
+        <p class="mb-2">&copy; 2024 SmartSwing AI Architecture Framework. All rights reserved.</p>
+        <p>본 페이지는 제공된 연구 보고서를 기반으로 자동 생성된 인터랙티브 가이드입니다.</p>
+    </div>
+</footer>
+
+<script>
+    // Data for charts and interactivity
+    const swingPhases = [
+        { id: 'P1', name: 'Address', desc: '동작 시작 전 정지 상태. 관절 좌표의 안정성 확인 및 기준 좌표계 설정 단계.' },
+        { id: 'P2', name: 'Takeaway', desc: '클럽이 지면과 평행해지는 단계. 척추각과 손목 코킹의 초기 각도 측정 시작.' },
+        { id: 'P3', name: 'Half-back', desc: '왼팔이 지면과 평행. 어깨 회전과 골반 회전의 분리(X-Factor)가 본격화됨.' },
+        { id: 'P4', name: 'Top', desc: '백스윙 최고점. X-Factor가 최대치에 도달하며 리버스 피벗 유무를 진단하는 핵심 포인트.' },
+        { id: 'P5', name: 'Down-half', desc: '클럽이 다시 지면과 평행. 체중 이동 및 힙 턴의 가속도 벡터 분석.' },
+        { id: 'P7', name: 'Impact', desc: '타격 시점. 엉덩이의 전진 이탈(얼리 익스텐션) 유무를 판정하는 가장 중요한 순간.' },
+        { id: 'P8', name: 'Follow', desc: '타격 직후 팔의 확장성 확인. 척추의 기울기 유지 정도를 평가.' },
+        { id: 'P9', name: 'Finish', desc: '동작 완결 및 균형 평가. 체중이 왼발에 완전히 실렸는지 관절 밸런스 체크.' }
+    ];
+
+    // Initialize Phase Selector
+    const phaseBtnContainer = document.getElementById('phase-buttons');
+    const phaseDetail = document.getElementById('phase-detail');
+
+    swingPhases.forEach(phase => {
+        const btn = document.createElement('button');
+        btn.className = 'px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-full text-sm font-medium transition-all';
+        btn.innerText = `${phase.id}: ${phase.name}`;
+        btn.onclick = () => {
+            document.querySelectorAll('#phase-buttons button').forEach(b => b.classList.remove('bg-emerald-600', 'border-emerald-500'));
+            btn.classList.add('bg-emerald-600', 'border-emerald-500');
+            phaseDetail.innerHTML = `
+                <h3 class="text-2xl font-bold mb-3 text-emerald-400">${phase.id} - ${phase.name}</h3>
+                <p class="text-lg leading-relaxed text-stone-200">${phase.desc}</p>
+                <div class="mt-6 flex gap-4 text-xs font-mono text-emerald-300">
+                    <span class="px-2 py-1 bg-emerald-900/50 rounded">분석 지표: ${phase.id === 'P4' ? 'X-Factor, Spine Angle' : phase.id === 'P7' ? 'Pelvis Offset, Club Speed' : 'Joint Coordinate'}</span>
+                </div>
+            `;
+        };
+        phaseBtnContainer.appendChild(btn);
+    });
+
+    // Chart.js Performance Chart
+    const ctxPerf = document.getElementById('performanceChart').getContext('2d');
+    new Chart(ctxPerf, {
+        type: 'bar',
+        data: {
+            labels: ['General Pose', 'MediaPipe', 'HRNet', 'ViTPose', 'GolfPose (Proprietary)'],
+            datasets: [{
+                label: 'mAP (Mean Average Precision)',
+                data: [0.66, 0.72, 0.81, 0.84, 0.94],
+                backgroundColor: ['#d6d3d1', '#a8a29e', '#57534e', '#292524', '#059669'],
+                borderRadius: 6
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, max: 1.0 } }
+        }
+    });
+
+    // Chart.js X-Factor Chart
+    const ctxXF = document.getElementById('xfactorChart').getContext('2d');
+    new Chart(ctxXF, {
+        type: 'line',
+        data: {
+            labels: ['Address', 'Takeaway', 'Top', 'Impact', 'Finish'],
+            datasets: [
+                {
+                    label: '프로 표준 (°)',
+                    data: [10, 25, 52, 40, 15],
+                    borderColor: '#059669',
+                    backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3
+                },
+                {
+                    label: '사용자 데이터 (°)',
+                    data: [8, 20, 38, 28, 12],
+                    borderColor: '#f59e0b',
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        afterBody: (context) => context[0].dataIndex === 2 ? '진단: 상하체 꼬임 부족 (교정 필요)' : ''
+                    }
+                }
+            },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Scroll Animation for Nav
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        let current = '';
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 100) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+.overlay-comparison-card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  padding: var(--space-5);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.overlay-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.overlay-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.overlay-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.overlay-subtitle {
+  font-size: 0.813rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.trajectory-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-strong);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-body);
+  font-size: 0.813rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trajectory-toggle-btn:hover,
+.trajectory-toggle-btn.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.25);
+}
+
+/* Viewport Stacked Layer Container */
+.overlay-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 440px;
+  background-color: #0b0f19;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  transition: opacity 0.1s linear;
+}
+
+.video-user {
+  z-index: 1;
+}
+
+.video-pro {
+  z-index: 2;
+  mix-blend-mode: screen; /* Smooth Ghost Blend Overlay */
+}
+
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Floating Controls Bar at Bottom of Viewport */
+.overlay-floating-controls {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 8px 16px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  max-width: 90%;
+}
+
+.control-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+  color: white;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.control-icon-btn:hover {
+  transform: scale(1.08);
+  background-color: var(--color-primary-hover);
+}
+
+.blend-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.blend-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.label-user {
+  color: #38bdf8;
+}
+
+.label-pro {
+  color: var(--color-accent-coral);
+}
+
+.blend-range-slider {
+  width: 110px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* Legend Overlay Top-Right */
+.overlay-legend {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.75rem;
+  color: #f8fafc;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.user-dot {
+  background-color: #0066FF;
+  box-shadow: 0 0 6px #0066FF;
+}
+
+.pro-dot {
+  background-color: #FF6B4A;
+  box-shadow: 0 0 6px #FF6B4A;
+}
+
+/* Phase Jump Pills */
+.phase-sync-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: 8px 12px;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.phase-sync-title {
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.phase-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.phase-sync-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border-strong);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-body);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.phase-sync-pill:hover,
+.phase-sync-pill.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* Biomechanics Metrics Row */
+.trajectory-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.traj-metric-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.813rem;
+}
+
+.traj-icon {
+  color: var(--color-primary);
+}
+
+.traj-label {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.traj-value {
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-left: auto;
+}
+
+.val-high {
+  color: var(--color-accent-mint);
+}
+
+.val-warn {
+  color: var(--color-accent-coral);
+}

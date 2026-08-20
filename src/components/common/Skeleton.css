@@ -1,0 +1,27 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    rgba(229, 231, 235, 0.5) 50%,
+    var(--color-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+.skeleton-rect {
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

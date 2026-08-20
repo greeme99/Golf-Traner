@@ -1,0 +1,215 @@
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.upload-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-2);
+}
+
+.upload-zone {
+  text-align: center;
+  border: 2px dashed var(--color-border);
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.upload-prompt {
+  padding: var(--space-6) 0;
+  cursor: pointer;
+}
+
+.upload-icon-wrapper {
+  display: inline-flex;
+  padding: var(--space-4);
+  background-color: rgba(46, 125, 50, 0.1);
+  border-radius: 50%;
+  margin-bottom: var(--space-4);
+}
+
+.upload-icon {
+  color: var(--color-primary);
+}
+
+.upload-prompt h3 {
+  margin-bottom: var(--space-1);
+}
+
+.upload-prompt p {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: var(--space-4) 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.divider span {
+  padding: 0 var(--space-2);
+}
+
+.camera-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.preview-zone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clear-btn {
+  color: var(--color-text-muted);
+}
+
+.clear-btn:hover {
+  color: var(--color-error);
+}
+
+.video-preview-wrapper {
+  background: #000;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  aspect-ratio: 9/16;
+  display: flex;
+  align-items: center;
+}
+
+.video-preview {
+  width: 100%;
+  max-height: 100%;
+}
+
+.start-btn {
+  width: 100%;
+}
+
+.live-wrapper {
+  position: relative;
+}
+
+.live-video {
+  transform: scaleX(-1); /* Mirror camera */
+}
+
+.recording-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.camera-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+.record-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.record-btn.start {
+  background-color: var(--color-primary);
+}
+
+.record-btn.stop {
+  background-color: var(--color-error);
+}
+
+.angle-selector {
+  margin: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.angle-selector h4 {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.angle-options {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.angle-option {
+  flex: 1;
+  text-align: center;
+  padding: var(--space-2);
+  background-color: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.angle-option input[type="radio"] {
+  display: none;
+}
+
+.angle-option.selected {
+  background-color: rgba(46, 125, 50, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Tablet & Desktop */
+@media (min-width: 768px) {
+  .upload-container {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}

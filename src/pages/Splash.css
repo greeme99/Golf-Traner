@@ -1,0 +1,27 @@
+.splash-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.splash-logo {
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.splash-logo h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-2);
+}
+
+.splash-logo p {
+  opacity: 0.8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

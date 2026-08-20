@@ -1,0 +1,99 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.dashboard-welcome h2 {
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.dashboard-welcome p {
+  color: var(--color-text-secondary);
+}
+
+.dashboard-cta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(255, 152, 0, 0.05));
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+.cta-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.cta-icon {
+  background-color: white;
+  color: var(--color-primary);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.view-all-btn {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.history-card {
+  padding: 0;
+}
+
+.history-card .card-content {
+  padding: var(--space-3);
+}
+
+.history-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.history-icon {
+  color: var(--color-accent);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-8);
+  background-color: white;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* Tablet & Desktop */
+@media (min-width: 768px) {
+  .dashboard-cta {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
