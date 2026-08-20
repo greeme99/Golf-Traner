@@ -1,10 +1,9 @@
 import { useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnalysisContext } from '../contexts/AnalysisContext';
-import { Upload as UploadIcon, X, Camera, Square, Video, ArrowRight } from 'lucide-react';
+import { Upload as UploadIcon, X, Camera, Square, Video } from 'lucide-react';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
-import introImage from '../assets/intro-image.png';
 import './Upload.css';
 
 const Upload = () => {
@@ -110,34 +109,6 @@ const Upload = () => {
 
   return (
     <div className="upload-container">
-      {(!previewUrl && mode !== 'camera') && (
-        <div className="intro-section">
-          <div className="intro-image-wrapper">
-            <img src={introImage} alt="Smart Swing Trainer Intro" className="intro-image" />
-          </div>
-          <div className="intro-text">
-            <h3>AI 골프 스윙 분석기</h3>
-            <p>단 3단계로 완벽한 스윙 피드백을 받아보세요.</p>
-          </div>
-          <div className="process-flow">
-            <Card className="flow-step">
-              <div className="step-number">1</div>
-              <div className="step-text">영상 업로드</div>
-            </Card>
-            <ArrowRight className="flow-arrow" size={20} />
-            <Card className="flow-step">
-              <div className="step-number">2</div>
-              <div className="step-text">AI 정밀 분석</div>
-            </Card>
-            <ArrowRight className="flow-arrow" size={20} />
-            <Card className="flow-step">
-              <div className="step-number">3</div>
-              <div className="step-text">맞춤형 피드백</div>
-            </Card>
-          </div>
-        </div>
-      )}
-
       <div className="upload-action-section">
         <h2>New Analysis</h2>
       

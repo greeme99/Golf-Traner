@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { AnalysisContext } from '../contexts/AnalysisContext';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
-import { Video, ChevronRight, Activity } from 'lucide-react';
+import { Video, ChevronRight, Activity, ArrowRight } from 'lucide-react';
+import introImage from '../assets/intro-image.png';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -17,6 +18,32 @@ const Dashboard = () => {
       <div className="dashboard-welcome">
         <h2>Hello, Golfer!</h2>
         <p>Ready to improve your swing?</p>
+      </div>
+
+      <div className="intro-section">
+        <div className="intro-image-wrapper">
+          <img src={introImage} alt="Smart Swing Trainer Intro" className="intro-image" />
+        </div>
+        <div className="intro-text">
+          <h3>AI 골프 스윙 분석기</h3>
+          <p>단 3단계로 완벽한 스윙 피드백을 받아보세요.</p>
+        </div>
+        <div className="process-flow">
+          <Card className="flow-step">
+            <div className="step-number">1</div>
+            <div className="step-text">영상 업로드</div>
+          </Card>
+          <ArrowRight className="flow-arrow" size={20} />
+          <Card className="flow-step">
+            <div className="step-number">2</div>
+            <div className="step-text">AI 정밀 분석</div>
+          </Card>
+          <ArrowRight className="flow-arrow" size={20} />
+          <Card className="flow-step">
+            <div className="step-number">3</div>
+            <div className="step-text">맞춤형 피드백</div>
+          </Card>
+        </div>
       </div>
 
       <Card className="dashboard-cta">
