@@ -8,7 +8,7 @@ const Splash = () => {
   useEffect(() => {
     // Navigate to dashboard after 2 seconds
     const timer = setTimeout(() => {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }, 2000);
     return () => clearTimeout(timer);
   }, [navigate]);
