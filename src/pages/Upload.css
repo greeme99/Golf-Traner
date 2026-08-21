@@ -208,7 +208,7 @@
 /* Tablet & Desktop */
 @media (min-width: 768px) {
   .upload-container {
-    max-width: 600px;
+    max-width: 1000px; /* Expand on PC */
     margin: 0 auto;
     width: 100%;
   }

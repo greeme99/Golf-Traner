@@ -7,6 +7,12 @@
   width: 100%;
 }
 
+@media (min-width: 768px) {
+  .result-container {
+    max-width: 1400px;
+  }
+}
+
 .result-header {
   display: flex;
   justify-content: space-between;
