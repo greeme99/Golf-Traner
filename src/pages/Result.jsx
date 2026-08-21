@@ -35,19 +35,43 @@ const Result = () => {
         if (proConfig && proConfig.timestamps && proConfig.timestamps.length === 5) {
           thumbs = await extractFramesAtTimestamps(selectedPro, proConfig.timestamps);
         } else {
-          // Dynmically analyze pro video for perfect phase matching
-          const video = document.createElement('video');
-          video.src = selectedPro;
-          video.crossOrigin = 'anonymous';
-          await new Promise(r => { video.onloadeddata = r; video.onerror = r; });
+          // Check cache first ("한번 읽어서 저장")
+          const cacheKey = 'pro_phases_' + btoa(selectedPro);
+          const cached = localStorage.getItem(cacheKey);
+          let timestamps = null;
           
-          if (video.duration) {
-            const poseData = await extractPoseLandmarks(video);
-            const result = await analyzeSwingPhases(poseData);
-            const timestamps = result.phases.map(p => p.time);
+          if (cached) {
+            timestamps = JSON.parse(cached);
+          } else {
+            // Dynmically analyze pro video for perfect phase matching
+            const video = document.createElement('video');
+            video.src = selectedPro;
+            video.crossOrigin = 'anonymous';
+            // Must be visible for MediaPipe to read pixels, so hide it offscreen
+            video.style.position = 'fixed';
+            video.style.left = '-9999px';
+            video.style.width = '640px';
+            video.style.height = '480px';
+            document.body.appendChild(video);
+            
+            await new Promise(r => { video.onloadeddata = r; video.onerror = r; });
+            
+            if (video.duration) {
+              const poseData = await extractPoseLandmarks(video);
+              const result = await analyzeSwingPhases(poseData);
+              
+              if (!(result.phases[0].time === 0.1 && result.phases[1].time === 0.5)) {
+                timestamps = result.phases.map(p => p.time);
+                localStorage.setItem(cacheKey, JSON.stringify(timestamps));
+              }
+            }
+            document.body.removeChild(video);
+          }
+          
+          if (timestamps && timestamps.length === 5) {
             thumbs = await extractFramesAtTimestamps(selectedPro, timestamps);
           } else {
-            thumbs = await extractEquidistantFrames(selectedPro, 5);
+            thumbs = await extractEquidistantFrames(selectedPro, 5); // Fallback
           }
         }
         if (isMounted) setProThumbnails(thumbs);
