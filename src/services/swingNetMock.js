@@ -33,52 +33,65 @@ export const analyzeSwingPhases = async (poseData, onProgress) => {
           return;
         }
 
-        // 1. Calculate Wrist Y & Nose position history
+        // 1. Calculate Wrist Y, Wrist X & Nose position history
         const kinematicFrames = poseData.map((item) => {
           const lm = item.landmarks;
           if (!lm || lm.length < 25) {
-            return { time: item.time, wristY: 1.0, noseX: 0.5, noseY: 0.5, spineAngle: 25 };
+            return { time: item.time, wristY: 1.0, wristX: 0.5, noseX: 0.5, noseY: 0.5, spineAngle: 25, valid: false };
           }
 
           const lWrist = lm[15];
           const rWrist = lm[16];
-          const wristY = (lWrist && rWrist) ? (lWrist.y + rWrist.y) / 2 : (lWrist?.y || rWrist?.y || 1.0);
+          
+          let wristY = 1.0, wristX = 0.5, valid = false;
+          const useL = lWrist && lWrist.visibility > 0.3;
+          const useR = rWrist && rWrist.visibility > 0.3;
+          
+          if (useL && useR) {
+            wristY = (lWrist.y + rWrist.y) / 2;
+            wristX = (lWrist.x + rWrist.x) / 2;
+            valid = true;
+          } else if (useL) {
+            wristY = lWrist.y; wristX = lWrist.x; valid = true;
+          } else if (useR) {
+            wristY = rWrist.y; wristX = rWrist.x; valid = true;
+          }
 
-          const lShoulder = lm[11];
-          const rShoulder = lm[12];
-          const lHip = lm[23];
-          const rHip = lm[24];
-
-          // Midpoints for Spine Line Angle calculation
+          const lShoulder = lm[11], rShoulder = lm[12], lHip = lm[23], rHip = lm[24];
           let spineAngle = 25;
           if (lShoulder && rShoulder && lHip && rHip) {
             const shoulderMidX = (lShoulder.x + rShoulder.x) / 2;
             const shoulderMidY = (lShoulder.y + rShoulder.y) / 2;
             const hipMidX = (lHip.x + rHip.x) / 2;
             const hipMidY = (lHip.y + rHip.y) / 2;
-
-            const dx = hipMidX - shoulderMidX;
-            const dy = hipMidY - shoulderMidY;
-            spineAngle = Math.abs(Math.atan2(dx, dy) * (180 / Math.PI));
+            spineAngle = Math.abs(Math.atan2(hipMidX - shoulderMidX, hipMidY - shoulderMidY) * (180 / Math.PI));
           }
 
           const nose = lm[0];
           return {
             time: item.time,
             frameObj: item,
-            wristY,
+            wristY, wristX, valid,
             noseX: nose ? nose.x : 0.5,
             noseY: nose ? nose.y : 0.5,
             spineAngle: Math.round(spineAngle)
           };
         });
 
-        // 2. Identify 5 Swing Phases based on kinematic extrema
+        // Fill invalid frames with previous valid data
+        for (let i = 1; i < kinematicFrames.length; i++) {
+          if (!kinematicFrames[i].valid) {
+            kinematicFrames[i].wristY = kinematicFrames[i-1].wristY;
+            kinematicFrames[i].wristX = kinematicFrames[i-1].wristX;
+          }
+        }
+
+        // 2. Identify 5 Swing Phases based on advanced kinematics
         
-        // Find Top of Backswing: Lowest wristY (highest physical point) in the first 70% of frames
+        // Find Top: Lowest wristY (highest point) in the first 80%
         let topIdx = 0;
         let minTopY = 999;
-        const searchEndForTop = Math.floor(totalFrames * 0.7);
+        const searchEndForTop = Math.floor(totalFrames * 0.8);
         for (let i = 0; i < searchEndForTop; i++) {
           if (kinematicFrames[i].wristY < minTopY) {
             minTopY = kinematicFrames[i].wristY;
@@ -87,7 +100,7 @@ export const analyzeSwingPhases = async (poseData, onProgress) => {
         }
         if (topIdx === 0) topIdx = Math.floor(totalFrames * 0.4);
 
-        // Find Address: Highest wristY (lowest physical point) BEFORE Top
+        // Find Address: Highest wristY (lowest point) BEFORE Top
         let addressIdx = 0;
         let maxAddressY = -1;
         for (let i = 0; i <= topIdx; i++) {
@@ -97,29 +110,35 @@ export const analyzeSwingPhases = async (poseData, onProgress) => {
           }
         }
 
-        // Find Takeaway: Midpoint of Y-axis between Address and Top
+        // Find Takeaway: Midpoint Y between Address and Top
         const targetTakeawayY = (kinematicFrames[addressIdx].wristY + kinematicFrames[topIdx].wristY) / 2;
         let takeawayIdx = addressIdx;
-        let minDiff = 999;
+        let minDiffTakeaway = 999;
         for (let i = addressIdx; i <= topIdx; i++) {
           const diff = Math.abs(kinematicFrames[i].wristY - targetTakeawayY);
-          if (diff < minDiff) {
-            minDiff = diff;
+          if (diff < minDiffTakeaway) {
+            minDiffTakeaway = diff;
             takeawayIdx = i;
           }
         }
 
-        // Find Impact: Highest wristY (lowest physical point) AFTER Top
-        let impactIdx = topIdx;
-        let maxImpactY = -1;
+        // Find Impact: Frame AFTER Top where wristX is closest to Address wristX
+        const addressX = kinematicFrames[addressIdx].wristX;
+        let impactIdx = topIdx + 1;
+        let minDiffImpactX = 999;
         for (let i = topIdx; i < totalFrames; i++) {
-          if (kinematicFrames[i].wristY > maxImpactY) {
-            maxImpactY = kinematicFrames[i].wristY;
-            impactIdx = i;
+          // Impact must also be relatively low (Y > midpoint) to avoid catching the finish
+          if (kinematicFrames[i].wristY > targetTakeawayY) {
+            const diffX = Math.abs(kinematicFrames[i].wristX - addressX);
+            if (diffX < minDiffImpactX) {
+              minDiffImpactX = diffX;
+              impactIdx = i;
+            }
           }
         }
+        if (impactIdx >= totalFrames) impactIdx = totalFrames - 2;
 
-        // Find Finish: Lowest wristY (highest physical point) AFTER Impact
+        // Find Finish: Lowest wristY (highest point) AFTER Impact
         let finishIdx = impactIdx;
         let minFinishY = 999;
         for (let i = impactIdx; i < totalFrames; i++) {

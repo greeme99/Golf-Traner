@@ -35,8 +35,8 @@ const Result = () => {
         if (proConfig && proConfig.timestamps && proConfig.timestamps.length === 5) {
           thumbs = await extractFramesAtTimestamps(selectedPro, proConfig.timestamps);
         } else {
-          // Check cache first ("한번 읽어서 저장")
-          const cacheKey = 'pro_phases_' + btoa(selectedPro);
+          // Check cache first ("한번 읽어서 저장") - Cache busted to use new V2 logic
+          const cacheKey = 'pro_phases_v2_' + btoa(selectedPro);
           const cached = localStorage.getItem(cacheKey);
           let timestamps = null;
           
