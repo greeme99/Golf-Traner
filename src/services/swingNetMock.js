@@ -74,37 +74,60 @@ export const analyzeSwingPhases = async (poseData, onProgress) => {
         });
 
         // 2. Identify 5 Swing Phases based on kinematic extrema
-        // Phase 1: Address (Initial steady frame)
-        const addressIdx = 0;
-
-        // Phase 3: Top of Backswing (Minimum Wrist Y value -> Highest wrist height in MediaPipe Y coordinates)
+        
+        // Find Top of Backswing: Lowest wristY (highest physical point) in the first 70% of frames
         let topIdx = 0;
-        let minY = 999;
-        kinematicFrames.forEach((kf, idx) => {
-          if (kf.wristY < minY) {
-            minY = kf.wristY;
-            topIdx = idx;
+        let minTopY = 999;
+        const searchEndForTop = Math.floor(totalFrames * 0.7);
+        for (let i = 0; i < searchEndForTop; i++) {
+          if (kinematicFrames[i].wristY < minTopY) {
+            minTopY = kinematicFrames[i].wristY;
+            topIdx = i;
           }
-        });
+        }
+        if (topIdx === 0) topIdx = Math.floor(totalFrames * 0.4);
 
-        // Safeguard top index bounds
-        if (topIdx <= 0) topIdx = Math.floor(totalFrames * 0.4);
+        // Find Address: Highest wristY (lowest physical point) BEFORE Top
+        let addressIdx = 0;
+        let maxAddressY = -1;
+        for (let i = 0; i <= topIdx; i++) {
+          if (kinematicFrames[i].wristY > maxAddressY) {
+            maxAddressY = kinematicFrames[i].wristY;
+            addressIdx = i;
+          }
+        }
 
-        // Phase 2: Takeaway (Midpoint between Address & Top)
-        const takeawayIdx = Math.floor(topIdx * 0.5);
+        // Find Takeaway: Midpoint of Y-axis between Address and Top
+        const targetTakeawayY = (kinematicFrames[addressIdx].wristY + kinematicFrames[topIdx].wristY) / 2;
+        let takeawayIdx = addressIdx;
+        let minDiff = 999;
+        for (let i = addressIdx; i <= topIdx; i++) {
+          const diff = Math.abs(kinematicFrames[i].wristY - targetTakeawayY);
+          if (diff < minDiff) {
+            minDiff = diff;
+            takeawayIdx = i;
+          }
+        }
 
-        // Phase 4: Impact (First wrist Y local minimum/drop after Top of Backswing)
-        let impactIdx = Math.min(topIdx + Math.floor((totalFrames - topIdx) * 0.4), totalFrames - 2);
+        // Find Impact: Highest wristY (lowest physical point) AFTER Top
+        let impactIdx = topIdx;
         let maxImpactY = -1;
-        for (let i = topIdx + 1; i < totalFrames; i++) {
+        for (let i = topIdx; i < totalFrames; i++) {
           if (kinematicFrames[i].wristY > maxImpactY) {
             maxImpactY = kinematicFrames[i].wristY;
             impactIdx = i;
           }
         }
 
-        // Phase 5: Finish (Final follow-through frame)
-        const finishIdx = totalFrames - 1;
+        // Find Finish: Lowest wristY (highest physical point) AFTER Impact
+        let finishIdx = impactIdx;
+        let minFinishY = 999;
+        for (let i = impactIdx; i < totalFrames; i++) {
+          if (kinematicFrames[i].wristY < minFinishY) {
+            minFinishY = kinematicFrames[i].wristY;
+            finishIdx = i;
+          }
+        }
 
         const phases = [
           { name: 'Address', frame: kinematicFrames[addressIdx].frameObj, time: kinematicFrames[addressIdx].time },

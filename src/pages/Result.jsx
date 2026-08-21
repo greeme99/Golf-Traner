@@ -2,6 +2,8 @@ import { useRef, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnalysisContext } from '../contexts/AnalysisContext';
 import { extractEquidistantFrames, extractFramesAtTimestamps } from '../utils/videoUtils';
+import { extractPoseLandmarks } from '../services/poseService';
+import { analyzeSwingPhases } from '../services/swingNetMock';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import ReactMarkdown from 'react-markdown';
@@ -10,11 +12,9 @@ import OverlayComparison from '../components/analysis/OverlayComparison';
 import './Result.css';
 
 const PRO_SWINGS = [
-  // VLM(Vision Language Model) 비디오 정밀 분석을 통해 도출한 정확한 스윙 5단계 타임스탬프 (초)
-  // [Address, Takeaway, Top, Impact, Finish]
-  { id: 'pro1', name: 'Pro Swing 1', src: `${import.meta.env.BASE_URL}pro-swings/pro-swing-1.mp4`, timestamps: [0.5, 1.2, 2.1, 3.1, 4.5] },
-  { id: 'pro2', name: 'Pro Swing 2', src: `${import.meta.env.BASE_URL}pro-swings/pro-swing-2.mp4`, timestamps: [0.1, 0.5, 1.0, 1.5, 2.0] },
-  { id: 'robot', name: 'Robot Swing', src: `${import.meta.env.BASE_URL}pro-swings/robot-swing.mp4`, timestamps: [2.5, 2.5, 0.5, 6.5, 1.5] }
+  { id: 'pro1', name: 'Pro Swing 1', src: `${import.meta.env.BASE_URL}pro-swings/pro-swing-1.mp4` },
+  { id: 'pro2', name: 'Pro Swing 2', src: `${import.meta.env.BASE_URL}pro-swings/pro-swing-2.mp4` },
+  { id: 'robot', name: 'Robot Swing', src: `${import.meta.env.BASE_URL}pro-swings/robot-swing.mp4` }
 ];
 
 const Result = () => {
@@ -35,7 +35,20 @@ const Result = () => {
         if (proConfig && proConfig.timestamps && proConfig.timestamps.length === 5) {
           thumbs = await extractFramesAtTimestamps(selectedPro, proConfig.timestamps);
         } else {
-          thumbs = await extractEquidistantFrames(selectedPro, 5);
+          // Dynmically analyze pro video for perfect phase matching
+          const video = document.createElement('video');
+          video.src = selectedPro;
+          video.crossOrigin = 'anonymous';
+          await new Promise(r => { video.onloadeddata = r; video.onerror = r; });
+          
+          if (video.duration) {
+            const poseData = await extractPoseLandmarks(video);
+            const result = await analyzeSwingPhases(poseData);
+            const timestamps = result.phases.map(p => p.time);
+            thumbs = await extractFramesAtTimestamps(selectedPro, timestamps);
+          } else {
+            thumbs = await extractEquidistantFrames(selectedPro, 5);
+          }
         }
         if (isMounted) setProThumbnails(thumbs);
       } catch (err) {
