@@ -12,9 +12,9 @@ import './Result.css';
 const PRO_SWINGS = [
   // VLM(Vision Language Model) 비디오 정밀 분석을 통해 도출한 정확한 스윙 5단계 타임스탬프 (초)
   // [Address, Takeaway, Top, Impact, Finish]
-  { id: 'pro1', name: 'Pro Swing 1', src: '/pro-swings/pro-swing-1.mp4', timestamps: [0.5, 1.2, 2.1, 3.1, 4.5] },
-  { id: 'pro2', name: 'Pro Swing 2', src: '/pro-swings/pro-swing-2.mp4', timestamps: [0.1, 0.5, 1.0, 1.5, 2.0] },
-  { id: 'robot', name: 'Robot Swing', src: '/pro-swings/robot-swing.mp4', timestamps: [2.5, 2.5, 0.5, 6.5, 1.5] }
+  { id: 'pro1', name: 'Pro Swing 1', src: `${import.meta.env.BASE_URL}pro-swings/pro-swing-1.mp4`, timestamps: [0.5, 1.2, 2.1, 3.1, 4.5] },
+  { id: 'pro2', name: 'Pro Swing 2', src: `${import.meta.env.BASE_URL}pro-swings/pro-swing-2.mp4`, timestamps: [0.1, 0.5, 1.0, 1.5, 2.0] },
+  { id: 'robot', name: 'Robot Swing', src: `${import.meta.env.BASE_URL}pro-swings/robot-swing.mp4`, timestamps: [2.5, 2.5, 0.5, 6.5, 1.5] }
 ];
 
 const Result = () => {
