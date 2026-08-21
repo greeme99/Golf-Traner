@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Card from '../common/Card';
-import { Layers, Play, Pause, RotateCcw, Sparkles, Eye } from 'lucide-react';
+import { Layers, Play, Pause, RotateCcw, Sparkles, Eye, Settings } from 'lucide-react';
 import './OverlayComparison.css';
 
 const OverlayComparison = ({ userVideoSrc, proVideoSrc, phases = [] }) => {
@@ -12,6 +12,9 @@ const OverlayComparison = ({ userVideoSrc, proVideoSrc, phases = [] }) => {
   const [blendMode, setBlendMode] = useState(50); // 0 (100% Me) to 100 (100% Pro), 50 (50:50 Overlay)
   const [showTrajectoryLines, setShowTrajectoryLines] = useState(true);
   const [activePhaseIndex, setActivePhaseIndex] = useState(0);
+  const [proScale, setProScale] = useState(1.0);
+  const [proSpeed, setProSpeed] = useState(0.5);
+  const [showAdjustments, setShowAdjustments] = useState(false);
 
   // Sync playback between both videos
   const togglePlay = () => {
@@ -47,6 +50,12 @@ const OverlayComparison = ({ userVideoSrc, proVideoSrc, phases = [] }) => {
       if (proVideoRef.current) proVideoRef.current.currentTime = targetTime;
     }
   };
+
+  useEffect(() => {
+    if (proVideoRef.current) {
+      proVideoRef.current.playbackRate = proSpeed;
+    }
+  }, [proSpeed, isPlaying]);
 
   // Draw Trajectory Comparison Arcs on Canvas
   useEffect(() => {
@@ -169,6 +178,14 @@ const OverlayComparison = ({ userVideoSrc, proVideoSrc, phases = [] }) => {
 
         <div className="overlay-toggle-group">
           <button 
+            className={`trajectory-toggle-btn ${showAdjustments ? 'active' : ''}`}
+            onClick={() => setShowAdjustments(!showAdjustments)}
+            title="Adjust Pro Settings"
+          >
+            <Settings size={15} />
+            <span>Adjust</span>
+          </button>
+          <button 
             className={`trajectory-toggle-btn ${showTrajectoryLines ? 'active' : ''}`}
             onClick={() => setShowTrajectoryLines(!showTrajectoryLines)}
           >
@@ -197,11 +214,11 @@ const OverlayComparison = ({ userVideoSrc, proVideoSrc, phases = [] }) => {
           ref={proVideoRef}
           src={proVideoSrc}
           className="overlay-video video-pro"
-          style={{ opacity: proOpacity }}
+          style={{ opacity: proOpacity, transform: `scale(${proScale})` }}
           playsInline
           muted
           loop
-          onLoadedData={() => { if (proVideoRef.current) proVideoRef.current.playbackRate = 0.5; }}
+          onLoadedData={() => { if (proVideoRef.current) proVideoRef.current.playbackRate = proSpeed; }}
         />
 
         {/* Trajectory Canvas Overlay */}
@@ -246,6 +263,30 @@ const OverlayComparison = ({ userVideoSrc, proVideoSrc, phases = [] }) => {
             <span>Pro Ideal Path (Orange)</span>
           </div>
         </div>
+
+        {/* Adjustments Panel */}
+        {showAdjustments && (
+          <div className="overlay-adjust-panel">
+            <div className="adjust-row">
+              <span className="adjust-label">Pro Scale: {proScale.toFixed(2)}x</span>
+              <input 
+                type="range" min="0.5" max="2.0" step="0.05" 
+                value={proScale} 
+                onChange={(e) => setProScale(Number(e.target.value))} 
+                className="adjust-slider"
+              />
+            </div>
+            <div className="adjust-row">
+              <span className="adjust-label">Pro Speed: {proSpeed.toFixed(2)}x</span>
+              <input 
+                type="range" min="0.1" max="2.0" step="0.05" 
+                value={proSpeed} 
+                onChange={(e) => setProSpeed(Number(e.target.value))} 
+                className="adjust-slider"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Swing Phase Sync Selector */}
